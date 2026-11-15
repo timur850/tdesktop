@@ -24,8 +24,9 @@ jobs:
     steps:
       - name: Prepare directories.
         run: |
-          mkdir %userprofile%\TBuild\Libraries
-          mklink /d %GITHUB_WORKSPACE%\TBuild %userprofile%\TBuild
+          rem Drive D: has much more free space than C: on GitHub runners
+          mkdir D:\TBuild\Libraries
+          mklink /d %GITHUB_WORKSPACE%\TBuild D:\TBuild
           echo TBUILD=%GITHUB_WORKSPACE%\TBuild>>%GITHUB_ENV%
           echo LibrariesPath=%GITHUB_WORKSPACE%\TBuild\Libraries\win64>>%GITHUB_ENV%
 
@@ -116,6 +117,10 @@ jobs:
         with:
           path: ${{ env.LibrariesPath }}
           key: my-libs-x64-${{ env.CACHE_KEY }}-${{ github.run_id }}
+
+      - name: Show free space.
+        shell: bash
+        run: df -h /c /d || true
 
       - name: Telegram Desktop build.
         env:
